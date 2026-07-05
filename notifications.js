@@ -1,0 +1,6 @@
+const notificationContainer = document.getElementById("notification-container") || (() => { const container = document.createElement("div"); container.id = "notification-container"; document.body.appendChild(container); return container; })();
+function showNotification(message, type = "info", duration = 4000) { const notification = document.createElement("div"); notification.className = `notification ${type}`; notification.textContent = message; notificationContainer.appendChild(notification); setTimeout(() => { notification.classList.add("show"); }, 100); setTimeout(() => { notification.classList.remove("show"); setTimeout(() => { notification.remove(); }, 300); }, duration); }
+function notifyConnected() { showNotification("Connected to Deriv WebSocket", "success"); }
+function notifyDisconnected() { showNotification("Disconnected from Deriv", "error"); }
+function notifyLoginSuccess() { showNotification("Login successful! Welcome to Deriv Pro Dashboard", "success"); }
+function notifyError(message) { showNotification(`Error: ${message}`, "error"); }
