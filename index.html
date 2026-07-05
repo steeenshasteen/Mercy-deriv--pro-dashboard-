@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deriv Pro Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#161b22">
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+<header class="topbar">
+    <h1>Deriv Pro Dashboard</h1>
+    <div class="account">
+        <span id="accountType">Not Connected</span>
+        <span id="balance">$0.00</span>
+        <button id="loginBtn">Login with Deriv</button>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</header>
+<div class="container">
+    <aside class="sidebar">
+        <h3>Navigation</h3>
+        <button class="menu-btn" data-page="dashboard">Dashboard</button>
+        <button class="menu-btn" data-page="markets">Markets</button>
+        <button class="menu-btn" data-page="history">History</button>
+        <button class="menu-btn" data-page="analytics">Analytics</button>
+        <button class="menu-btn" data-page="portfolio">Portfolio</button>
+        <button class="menu-btn" data-page="settings">Settings</button>
+    </aside>
+    <main>
+        <section id="dashboard">
+            <section class="stats">
+                <div class="card"><h3>Balance</h3><h2 id="liveBalance">$0.00</h2></div>
+                <div class="card"><h3>Profit</h3><h2 id="profit">$0.00</h2></div>
+                <div class="card"><h3>Win Rate</h3><h2 id="winrate">0%</h2></div>
+                <div class="card"><h3>Trades</h3><h2 id="trades">0</h2></div>
+            </section>
+            <section class="chart-area"><div id="chart" style="height:500px;"></div></section>
+            <section class="profile-card">
+                <h2>Account Profile</h2>
+                <p><strong>Login ID:</strong> <span id="profileLogin">-</span></p>
+                <p><strong>Account:</strong> <span id="profileType">-</span></p>
+                <p><strong>Currency:</strong> <span id="profileCurrency">-</span></p>
+                <p><strong>Balance:</strong> <span id="profileBalance">0.00</span></p>
+            </section>
+            <section class="portfolio-card">
+                <h2>Portfolio</h2>
+                <div class="portfolio-item"><strong>Balance:</strong><span id="portfolioBalance">0.00</span></div>
+                <div class="portfolio-item"><strong>Currency:</strong><span id="portfolioCurrency">-</span></div>
+                <div class="portfolio-item"><strong>Total Trades:</strong><span id="portfolioTrades">0</span></div>
+                <div class="portfolio-item"><strong>Total Profit:</strong><span id="portfolioProfit">0.00</span></div>
+            </section>
+        </section>
+        <section id="markets" style="display:none;">
+            <section class="market-watch">
+                <h2>Market Watch</h2>
+                <input id="marketSearch" type="text" placeholder="Search markets...">
+                <div id="marketWatch"></div>
+            </section>
+            <section class="watchlist-card">
+                <h2>Watchlist</h2>
+                <div id="watchlist"></div>
+            </section>
+        </section>
+        <section id="history" style="display:none;">
+            <h2>Trade History</h2>
+            <table id="contractsTable">
+                <thead><tr><th>ID</th><th>Market</th><th>Stake</th><th>P/L</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <button id="exportHistory" style="margin-top: 15px; padding: 10px 20px; background: #238636; color: white; border: none; border-radius: 8px; cursor: pointer;">Export to CSV</button>
+        </section>
+        <section id="analytics" style="display:none;">
+            <h2>Analytics</h2>
+            <div class="stats">
+                <div class="card"><h3>Total Trades</h3><h2 id="analyticsTrades">0</h2></div>
+                <div class="card"><h3>Win Rate</h3><h2 id="analyticsWinRate">0%</h2></div>
+                <div class="card"><h3>Total Profit</h3><h2 id="analyticsProfit">$0.00</h2></div>
+            </div>
+        </section>
+        <section id="portfolio" style="display:none;">
+            <h2>Portfolio Summary</h2>
+            <div class="portfolio-card">
+                <div class="portfolio-item"><strong>Account Balance:</strong><span id="portfolioBalanceLarge">0.00</span></div>
+                <div class="portfolio-item"><strong>Currency:</strong><span id="portfolioCurrencyLarge">-</span></div>
+                <div class="portfolio-item"><strong>Total Trades:</strong><span id="portfolioTradesLarge">0</span></div>
+                <div class="portfolio-item"><strong>Total P/L:</strong><span id="portfolioProfitLarge">0.00</span></div>
+            </div>
+        </section>
+        <section id="settings" style="display:none;">
+            <h2>Trading Settings</h2>
+            <section class="trade-panel">
+                <h3>Market Selection</h3>
+                <select id="symbol">
+                    <option value="R_10">Volatility 10</option>
+                    <option value="R_25">Volatility 25</option>
+                    <option value="R_50">Volatility 50</option>
+                    <option value="R_75">Volatility 75</option>
+                    <option value="R_100">Volatility 100</option>
+                </select>
+                <h3 style="margin-top: 20px;">Trade Configuration</h3>
+                <input type="number" id="stake" placeholder="Stake" min="1">
+                <input type="number" id="duration" placeholder="Duration" min="1">
+                <button id="buyBtn" style="width: 49%; margin-right: 1%; margin-top: 15px;">BUY</button>
+                <button id="sellBtn" style="width: 49%; margin-top: 15px;">SELL</button>
+            </section>
+            <section class="theme-settings" style="margin-top: 25px;">
+                <h3>Appearance</h3>
+                <button id="themeToggle" style="padding: 10px 20px; background: #1f6feb; color: white; border: none; border-radius: 8px; cursor: pointer;">Toggle Dark/Light Theme</button>
+            </section>
+        </section>
+    </main>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(err => console.log('SW registration failed:', err));
+}
+</script>
+<script src="config.js"></script>
+<script src="deriv.js"></script>
+<script src="charts.js"></script>
+<script src="utils.js"></script>
+<script src="history.js"></script>
+<script src="analytics.js"></script>
+<script src="profile.js"></script>
+<script src="portfolio.js"></script>
+<script src="marketwatch.js"></script>
+<script src="watchlist.js"></script>
+<script src="settings.js"></script>
+<script src="notifications.js"></script>
+<script src="dashboard.js"></script>
+<script src="theme.js"></script>
+<script src="router.js"></script>
+<script src="layout.js"></script>
+<script src="search.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
