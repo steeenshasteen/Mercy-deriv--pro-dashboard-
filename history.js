@@ -1,0 +1,5 @@
+const tradeHistory = [];
+function addTrade(record) { tradeHistory.unshift(record); if (tradeHistory.length > 100) tradeHistory.pop(); renderTradeHistory(); updateAnalytics(); }
+function renderTradeHistory() { const table = document.querySelector("#contractsTable tbody"); if (!table) return; table.innerHTML = ""; if (tradeHistory.length === 0) { table.innerHTML = "<tr><td colspan='5' style='text-align:center; color: #8b949e;'>No trades yet</td></tr>"; return; } tradeHistory.forEach(trade => { const row = document.createElement("tr"); row.innerHTML = `<td>${trade.id || "-"}</td><td>${trade.symbol || "-"}</td><td>${trade.stake || "-"}</td><td style="color: ${Number(trade.profit) > 0 ? '#238636' : '#da3633'}">${trade.profit || "-"}</td><td>${trade.status || "-"}</td>`; table.appendChild(row); }); }
+function clearTradeHistory() { tradeHistory.length = 0; renderTradeHistory(); }
+document.addEventListener("DOMContentLoaded", renderTradeHistory);
