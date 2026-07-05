@@ -1,0 +1,2 @@
+function filterMarkets() { const input = document.getElementById("marketSearch"); if (!input) return; const filter = input.value.toUpperCase(); const rows = document.querySelectorAll(".market-row"); rows.forEach(row => { const symbol = row.textContent.toUpperCase(); row.style.display = symbol.includes(filter) ? "flex" : "none"; }); }
+document.addEventListener("DOMContentLoaded", () => { const input = document.getElementById("marketSearch"); if (input) { input.addEventListener("keyup", filterMarkets); } });
